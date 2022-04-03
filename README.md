@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center">
   <a href="" rel="noopener">
  <img height=200px src="https://i.imgur.com/bRtCJbK.png" alt="Bot logo"></a>
