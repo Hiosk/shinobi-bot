@@ -1,26 +1,27 @@
-const {GuildMember} = require('discord.js');
+const {
+  GuildMember
+} = require('discord.js');
 
 module.exports = {
-  name: 'move',
-  description: 'move song position in the queue!',
-  options: [
-    {
-      name: 'track',
+  name: 'mover',
+  description: 'mover a posição da música na fila!',
+  options: [{
+      name: 'musica',
       type: 4, // 'INTEGER' Type
-      description: 'The track number you want to move',
+      description: 'O número da musica que você deseja mover',
       required: true,
     },
     {
-      name: 'position',
+      name: 'posicao',
       type: 4, // 'INTEGER' Type
-      description: 'The position to move it to',
+      description: 'A posição para movê-lo para',
       required: true,
     },
   ],
   async execute(interaction, player) {
     if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
       return void interaction.reply({
-        content: 'You are not in a voice channel!',
+        content: 'Você não está em um canal de voz!',
         ephemeral: true,
       });
     }
@@ -30,28 +31,32 @@ module.exports = {
       interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
     ) {
       return void interaction.reply({
-        content: 'You are not in my voice channel!',
+        content: 'Você não está no meu canal de voz!',
         ephemeral: true,
       });
     }
 
     await interaction.deferReply();
     const queue = player.getQueue(interaction.guildId);
-    if (!queue || !queue.playing) return void interaction.followUp({content: '❌ | No music is being played!'});
-    const queueNumbers = [interaction.options.get('track').value - 1, interaction.options.get('position').value - 1];
+    if (!queue || !queue.playing) return void interaction.followUp({
+      content: '❌ | Nenhuma música está sendo tocada!'
+    });
+    const queueNumbers = [interaction.options.get('musica').value - 1, interaction.options.get('posicao').value - 1];
     if (queueNumbers[0] > queue.tracks.length || queueNumbers[1] > queue.tracks.length)
-      return void interaction.followUp({content: '❌ | Track number greater than queue depth!'});
+      return void interaction.followUp({
+        content: '❌ | Número de faixa maior que a profundidade da fila!'
+      });
 
     try {
       const track = queue.remove(queueNumbers[0]);
       queue.insert(track, queueNumbers[1]);
       return void interaction.followUp({
-        content: `✅ | Moved **${track}**!`,
+        content: `✅ | **${track}** movida!`,
       });
     } catch (error) {
       console.log(error);
       return void interaction.followUp({
-        content: '❌ | Something went wrong!',
+        content: '❌ | Algo deu errado!',
       });
     }
   },

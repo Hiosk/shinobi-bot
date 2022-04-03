@@ -2,11 +2,11 @@ const {GuildMember} = require('discord.js');
 
 module.exports = {
   name: 'nowplaying',
-  description: 'Get the song that is currently playing.',
+  description: 'Obtenha a música que está tocando no momento.',
   async execute(interaction, player) {
     if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
       return void interaction.reply({
-        content: 'You are not in a voice channel!',
+        content: 'Você não está em um canal de voz!',
         ephemeral: true,
       });
     }
@@ -16,7 +16,7 @@ module.exports = {
       interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
     ) {
       return void interaction.reply({
-        content: 'You are not in my voice channel!',
+        content: 'Você não está no meu canal de voz!',
         ephemeral: true,
       });
     }
@@ -25,7 +25,7 @@ module.exports = {
     const queue = player.getQueue(interaction.guildId);
     if (!queue || !queue.playing)
       return void interaction.followUp({
-        content: '❌ | No music is being played!',
+        content: '❌ | Nenhuma música está sendo tocada!',
       });
     const progress = queue.createProgressBar();
     const perc = queue.getPlayerTimestamp();
@@ -33,7 +33,7 @@ module.exports = {
     return void interaction.followUp({
       embeds: [
         {
-          title: 'Now Playing',
+          title: 'Em reprodução',
           description: `🎶 | **${queue.current.title}**! (\`${perc.progress}%\`)`,
           fields: [
             {
